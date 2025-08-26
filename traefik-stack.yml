@@ -56,6 +56,8 @@ services:
         published: 53
         protocol: tcp
         mode: host
+    cap_add:
+      - NET_BIND_SERVICE
     networks:
       - traefik-public
     configs:
@@ -64,6 +66,11 @@ services:
       - source: coredns-zone-apps-lan
         target: /apps.lan.db
     deploy:
+      restart_policy:
+        condition: any
+        delay: 5s
+        max_attempts: 0
+        window: 120s
       placement:
         constraints:
           - node.role == manager
