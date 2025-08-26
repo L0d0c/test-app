@@ -37,7 +37,7 @@ services:
         - "traefik.http.routers.traefik-dashboard.entrypoints=web"
         - "traefik.http.routers.traefik-dashboard.service=api@internal"
         # Redirection de la racine vers /dashboard/
-        - "traefik.http.middlewares.dashboard-redirect.redirectregex.regex=^/$"
+        - "traefik.http.middlewares.dashboard-redirect.redirectregex.regex=^/$$"
         - "traefik.http.middlewares.dashboard-redirect.redirectregex.replacement=/dashboard/"
         - "traefik.http.middlewares.dashboard-redirect.redirectregex.permanent=true"
         - "traefik.http.routers.dashboard-redirect.rule=Host(`traefik.apps.lan`) && Path(`/`)"
