@@ -1,11 +1,11 @@
-apps.lan:53 {
+apps.lan:54 {
   file /apps.lan.db
   log
   errors
   cache 30
 }
 
-. {
+.:54 {
   log
   errors
   cache 30
