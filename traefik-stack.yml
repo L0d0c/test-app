@@ -9,6 +9,7 @@ services:
       - "--providers.swarm=true"
       - "--providers.swarm.exposedbydefault=false"
       - "--providers.swarm.network=traefik-public"
+      - "--api.dashboard=true"
       - "--entrypoints.web.address=:80"
     ports:
       - target: 80
