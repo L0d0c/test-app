@@ -31,6 +31,10 @@ services:
         - "traefik.http.routers.traefik-ping.rule=Path(`/ping`)"
         - "traefik.http.routers.traefik-ping.entrypoints=web"
         - "traefik.http.services.traefik-ping.loadbalancer.server.port=8080"
+        # Dashboard Traefik via api@internal (accessible sur http://traefik.apps.lan/dashboard/)
+        - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.apps.lan`)"
+        - "traefik.http.routers.traefik-dashboard.entrypoints=web"
+        - "traefik.http.routers.traefik-dashboard.service=api@internal"
 
 volumes:
   traefik-public-certificates:
