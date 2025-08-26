@@ -49,11 +49,11 @@ services:
     command: ["-conf", "/Corefile"]
     ports:
       - target: 54
-        published: 53
+        published: 54
         protocol: udp
         mode: host
       - target: 54
-        published: 53
+        published: 54
         protocol: tcp
         mode: host
     cap_add:
