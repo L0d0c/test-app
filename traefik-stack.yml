@@ -15,13 +15,14 @@ services:
       - target: 80
         published: 80
         protocol: tcp
-        mode: host
+        mode: ingress
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik-public-certificates:/certificates
     networks:
       - traefik-public
     deploy:
+      replicas: 2
       placement:
         constraints:
           - node.role == manager
@@ -35,9 +36,46 @@ services:
         - "traefik.http.routers.traefik-dashboard.rule=Host(`traefik.apps.lan`)"
         - "traefik.http.routers.traefik-dashboard.entrypoints=web"
         - "traefik.http.routers.traefik-dashboard.service=api@internal"
+        # Redirection de la racine vers /dashboard/
+        - "traefik.http.middlewares.dashboard-redirect.redirectregex.regex=^/$"
+        - "traefik.http.middlewares.dashboard-redirect.redirectregex.replacement=/dashboard/"
+        - "traefik.http.middlewares.dashboard-redirect.redirectregex.permanent=true"
+        - "traefik.http.routers.dashboard-redirect.rule=Host(`traefik.apps.lan`) && Path(`/`)"
+        - "traefik.http.routers.dashboard-redirect.entrypoints=web"
+        - "traefik.http.routers.dashboard-redirect.middlewares=dashboard-redirect"
+
+  dns:
+    image: coredns/coredns:latest
+    command: ["-conf", "/Corefile"]
+    ports:
+      - target: 53
+        published: 53
+        protocol: udp
+        mode: host
+      - target: 53
+        published: 53
+        protocol: tcp
+        mode: host
+    networks:
+      - traefik-public
+    configs:
+      - source: coredns-corefile
+        target: /Corefile
+      - source: coredns-zone-apps-lan
+        target: /apps.lan.db
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
 
 volumes:
   traefik-public-certificates:
+
+configs:
+  coredns-corefile:
+    file: ./coredns/Corefile
+  coredns-zone-apps-lan:
+    file: ./coredns/apps.lan.db
 
 networks:
   traefik-public:

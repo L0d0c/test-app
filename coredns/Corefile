@@ -1,0 +1,13 @@
+apps.lan:53 {
+  file /apps.lan.db
+  log
+  errors
+  cache 30
+}
+
+. {
+  log
+  errors
+  cache 30
+  forward . /etc/resolv.conf
+}

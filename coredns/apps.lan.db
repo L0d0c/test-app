@@ -1,0 +1,10 @@
+$TTL 300
+@   IN  SOA dns.apps.lan. hostmaster.apps.lan. 1 7200 3600 1209600 300
+    IN  NS  dns.apps.lan.
+@   IN  A   192.168.101.100
+
+; Point le nom du serveur DNS
+dns IN  A   192.168.101.100
+
+; Wildcard des sous-domaines
+*   IN  A   192.168.101.100
