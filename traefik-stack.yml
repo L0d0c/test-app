@@ -61,9 +61,9 @@ services:
     networks:
       - traefik-public
     configs:
-      - source: coredns-corefile
+      - source: coredns-corefile-v2
         target: /Corefile
-      - source: coredns-zone-apps-lan
+      - source: coredns-zone-apps-lan-v2
         target: /apps.lan.db
     deploy:
       restart_policy:
@@ -79,9 +79,9 @@ volumes:
   traefik-public-certificates:
 
 configs:
-  coredns-corefile:
+  coredns-corefile-v2:
     file: ./coredns/Corefile
-  coredns-zone-apps-lan:
+  coredns-zone-apps-lan-v2:
     file: ./coredns/apps.lan.db
 
 networks:
