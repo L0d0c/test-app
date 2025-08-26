@@ -1,0 +1,10 @@
+$TTL 30
+@   IN  SOA ns.apps.lan. hostmaster.apps.lan. (
+            2025082601 ; serial
+            7200       ; refresh
+            3600       ; retry
+            1209600    ; expire
+            30 )       ; minimum
+    IN  NS  ns.apps.lan.
+ns  IN  A   192.168.101.100
+*   IN  A   192.168.101.100

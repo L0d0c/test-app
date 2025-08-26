@@ -9,7 +9,7 @@ services:
       - GITEA__database__NAME=gitea
       - GITEA__database__USER=gitea
       - GITEA__database__PASSWD=gitea
-      - GITEA__server__ROOT_URL=http://charlie.192.168.101.100.nip.io/
+      - GITEA__server__ROOT_URL=http://charlie.apps.lan/
     depends_on:
       - db
     volumes:
@@ -22,7 +22,7 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.docker.network=traefik-public"
-        - "traefik.http.routers.charlie.rule=Host(`charlie.192.168.101.100.nip.io`)"
+        - "traefik.http.routers.charlie.rule=Host(`charlie.apps.lan`)"
         - "traefik.http.routers.charlie.entrypoints=web"
         - "traefik.http.services.charlie.loadbalancer.server.port=3000"
 

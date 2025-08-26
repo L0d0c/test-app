@@ -1,0 +1,6 @@
+apps.lan:53 {
+    log
+    errors
+    cache 30
+    file /apps.lan.db
+}

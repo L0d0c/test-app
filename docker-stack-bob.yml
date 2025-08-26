@@ -9,7 +9,7 @@ services:
       - GITEA__database__NAME=gitea
       - GITEA__database__USER=gitea
       - GITEA__database__PASSWD=gitea
-      - GITEA__server__ROOT_URL=http://bob.192.168.101.100.nip.io/
+      - GITEA__server__ROOT_URL=http://bob.apps.lan/
     depends_on:
       - db
     volumes:
@@ -22,7 +22,7 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.docker.network=traefik-public"
-        - "traefik.http.routers.bob.rule=Host(`bob.192.168.101.100.nip.io`)"
+        - "traefik.http.routers.bob.rule=Host(`bob.apps.lan`)"
         - "traefik.http.routers.bob.entrypoints=web"
         - "traefik.http.services.bob.loadbalancer.server.port=3000"
   db:

@@ -30,13 +30,33 @@ Gitea est une application Git auto-hébergée, légère et prête pour la prod. 
 
 Les stacks exposent:
 
-- Alice: `alice.192.168.101.100.nip.io`
-- Bob: `bob.192.168.101.100.nip.io`
-- Charlie: `charlie.192.168.101.100.nip.io`
+- Alice: `alice.apps.lan`
+- Bob: `bob.apps.lan`
+- Charlie: `charlie.apps.lan`
 
 Comptes/init: Gitea s’initialise au premier lancement. La base Postgres utilise par défaut `gitea / gitea` (utilisateur/mot de passe) définis dans les stacks.
 
 ---
+
+### Résolution DNS locale (macOS)
+
+Le stack `traefik-stack.yml` embarque un service DNS (CoreDNS) qui résout `*.apps.lan` vers `192.168.101.100`.
+
+Configurer macOS pour envoyer les requêtes `apps.lan` vers ce DNS:
+
+```bash
+sudo mkdir -p /etc/resolver
+echo "nameserver 127.0.0.1" | sudo tee /etc/resolver/apps.lan
+```
+
+Tester:
+
+```bash
+dig +short alice.apps.lan
+curl -I http://alice.apps.lan
+```
+
+Astuce: si `127.0.0.1` ne fonctionne pas, remplacez par l’IP hôte `192.168.101.100`.
 
 ## Section legacy (LinkedIn clone)
 
@@ -83,9 +103,9 @@ Ensuite, remplacer les sections `build:` par `image: <registry>/linkedin-fe:late
 
 Les stacks exposent:
 
-- Alice: `alice.192.168.101.100.nip.io`
-- Bob: `bob.192.168.101.100.nip.io`
-- Charlie: `charlie.192.168.101.100.nip.io`
+- Alice: `alice.apps.lan`
+- Bob: `bob.apps.lan`
+- Charlie: `charlie.apps.lan`
 
 Le backend est exposé sur le même host (port interne 9000) via Traefik.
 
