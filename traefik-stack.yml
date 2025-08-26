@@ -1,0 +1,37 @@
+version: "3.8"
+
+services:
+  traefik:
+    image: traefik:v2.11
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.swarmMode=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-public-certificates:/certificates
+    networks:
+      - traefik-public
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - "traefik.enable=true"
+        # Optionnel: exposer un ping pour healthcheck
+        - "traefik.http.routers.traefik-ping.rule=Path(`/ping`)"
+        - "traefik.http.routers.traefik-ping.entrypoints=web"
+        - "traefik.http.services.traefik-ping.loadbalancer.server.port=8080"
+
+volumes:
+  traefik-public-certificates:
+
+networks:
+  traefik-public:
+    external: true

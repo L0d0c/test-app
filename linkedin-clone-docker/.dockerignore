@@ -1,0 +1,10 @@
+# Minimize frontend image build context to only what's needed by Dockerfile.fe
+# Ignore everything by default
+**
+
+# Keep the static build and Dockerfile
+!build/**
+!Dockerfile.fe
+
+# Optionally keep nginx config if added later
+!nginx.conf

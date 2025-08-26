@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  linkedinfrontend:
+    build:
+      context: ./linkedin-clone-docker
+      dockerfile: Dockerfile.fe
+    depends_on:
+      - nodebackend
+      - db
+    networks:
+      - linkedinnet
+      - traefik-public
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=traefik-public"
+        - "traefik.http.routers.charlie.rule=Host(`charlie.192.168.101.100.nip.io`)"
+        - "traefik.http.routers.charlie.entrypoints=web"
+        - "traefik.http.services.charlie.loadbalancer.server.port=80"
+  nodebackend:
+    build:
+      context: ./linkedin-clone-docker/server
+      dockerfile: Dockerfile.be
+    depends_on:
+      - db
+    networks:
+      - linkedinnet
+      - traefik-public
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=traefik-public"
+        - "traefik.http.routers.charlie-api.rule=Host(`charlie.192.168.101.100.nip.io`)"
+        - "traefik.http.routers.charlie-api.entrypoints=web"
+        - "traefik.http.services.charlie-api.loadbalancer.server.port=9000"
+  db:
+    image: mongo:latest
+    volumes:
+      - linkedin_db:/data/db
+    networks:
+      - linkedinnet
+
+volumes:
+  linkedin_db:
+
+networks:
+  linkedinnet:
+    driver: overlay
+  traefik-public:
+    external: true
