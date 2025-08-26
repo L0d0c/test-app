@@ -1,6 +1,44 @@
 # test-app
 
-## Structure ciblée
+## Application: Gitea (Swarm)
+
+Gitea est une application Git auto-hébergée, légère et prête pour la prod. Nous déployons 3 instances (alice, bob, charlie) derrière Traefik, chacune avec sa base Postgres.
+
+### Déploiement rapide
+
+1. Créer le réseau overlay partagé
+
+   ```bash
+   docker network create --driver overlay traefik-public
+   ```
+
+2. Déployer Traefik
+
+   ```bash
+   docker stack deploy -c traefik-stack.yml traefik
+   ```
+
+3. Déployer les applications
+
+   ```bash
+   docker stack deploy -c docker-stack-alice.yml alice
+   docker stack deploy -c docker-stack-bob.yml bob
+   docker stack deploy -c docker-stack-charlie.yml charlie
+   ```
+
+### Hôtes
+
+Les stacks exposent:
+
+- Alice: `alice.192.168.101.100.nip.io`
+- Bob: `bob.192.168.101.100.nip.io`
+- Charlie: `charlie.192.168.101.100.nip.io`
+
+Comptes/init: Gitea s’initialise au premier lancement. La base Postgres utilise par défaut `gitea / gitea` (utilisateur/mot de passe) définis dans les stacks.
+
+---
+
+## Section legacy (LinkedIn clone)
 
 - `linkedin-clone-docker/` (frontend statique servi par Nginx + backend Node + Mongo)
   - `build/` (assets frontend précompilés copiés par `Dockerfile.fe`)
@@ -10,10 +48,13 @@
 ## Déploiement Traefik (Swarm)
 
 1. Créer le réseau overlay partagé:
+
    ```bash
    docker network create --driver overlay traefik-public
    ```
+
 2. Déployer Traefik:
+
    ```bash
    docker stack deploy -c traefik-stack.yml traefik
    ```
@@ -26,6 +67,7 @@ Attention: `docker stack deploy` (Swarm) ne construit pas les images à partir d
 - Option B (recommandé en Swarm): construire et pousser des images, puis référencer ces images dans les stacks `docker-stack-*.yml` via `image:` (à la place de `build:`).
 
 Exemple (schématique) pour construire/pousser:
+
 ```bash
 # Frontend (copie de linkedin-clone-docker/build/ dans Nginx)
 docker build -t <registry>/linkedin-fe:latest -f linkedin-clone-docker/Dockerfile.fe linkedin-clone-docker
@@ -40,6 +82,7 @@ Ensuite, remplacer les sections `build:` par `image: <registry>/linkedin-fe:late
 ## Hôtes
 
 Les stacks exposent:
+
 - Alice: `alice.192.168.101.100.nip.io`
 - Bob: `bob.192.168.101.100.nip.io`
 - Charlie: `charlie.192.168.101.100.nip.io`

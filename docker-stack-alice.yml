@@ -1,31 +1,45 @@
 version: "3.8"
 
 services:
-  openwebui:
-    image: ghcr.io/open-webui/open-webui:main
+  gitea:
+    image: gitea/gitea:latest
     environment:
-      - OLLAMA_BASE_URL=http://ollama:11434
-      - WEBUI_AUTH=False
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=db:5432
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD=gitea
+      - GITEA__server__ROOT_URL=http://alice.192.168.101.100.nip.io/
+    depends_on:
+      - db
+    volumes:
+      - gitea_data:/data
     networks:
       - appnet
       - traefik-public
     deploy:
-      replicas: 2
+      replicas: 1
       labels:
         - "traefik.enable=true"
         - "traefik.docker.network=traefik-public"
         - "traefik.http.routers.alice.rule=Host(`alice.192.168.101.100.nip.io`)"
         - "traefik.http.routers.alice.entrypoints=web"
-        - "traefik.http.services.alice.loadbalancer.server.port=8080"
-  ollama:
-    image: ollama/ollama:latest
+        - "traefik.http.services.alice.loadbalancer.server.port=3000"
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=gitea
+      - POSTGRES_PASSWORD=gitea
+      - POSTGRES_DB=gitea
+    volumes:
+      - gitea_db:/var/lib/postgresql/data
     networks:
       - appnet
-    volumes:
-      - ollama_data:/root/.ollama
 
 volumes:
-  ollama_data:
+  gitea_data:
+  gitea_db:
 
 networks:
   appnet:
