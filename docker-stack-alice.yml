@@ -20,8 +20,6 @@ services:
     deploy:
       replicas: 1
       labels:
-        - "io.portainer.accesscontrol.public=false"
-        - "io.portainer.accesscontrol.users=alice"
         - "traefik.enable=true"
         - "traefik.docker.network=traefik-public"
         - "traefik.http.routers.alice.rule=Host(`alice.apps.lan`)"
@@ -38,11 +36,6 @@ services:
       - gitea_db:/var/lib/postgresql/data
     networks:
       - appnet
-    deploy:
-      replicas: 1
-      labels:
-        - "io.portainer.accesscontrol.public=false"
-        - "io.portainer.accesscontrol.users=alice"
 
 volumes:
   gitea_data:
